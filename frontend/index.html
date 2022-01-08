@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPTO</title>
+  </head>
+
+  <body>
+    <div>
+      <label>Nome:</label>
+      <input type="text" id="inputName">
+    </div>
+    <div>
+      <label>CPF:</label>
+      <input type="text" id="inputCPF">
+    </div>
+    <button id="post">ENVIAR</button>  
+    <br/>
+    <br/>
+    <br/>
+    <button id="get">CONSULTAR</button>  
+    <p>Resposta do Servidor:</p>
+    <div id="consulta"></div>
+
+    <script>
+      const inputName = document.querySelector('#inputName')
+      const inputCPF = document.querySelector('#inputCPF')
+      const consulta = document.querySelector('#consulta')
+      const url = 'http://localhost:3000'
+
+      const executePost = () => {
+        const conteudo = {
+          'cpf': inputCPF.value, 
+          'nome': inputName.value
+        }
+
+        fetch (url , {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json;charset=utf-8'},
+        body: JSON.stringify(conteudo)
+        })
+      }  
+
+      const executeGet = async () => {
+        let response = await fetch(url);
+        if (response.status === 200 ) {
+          let data = await response.json();
+          if (data.myBD.length > 0){
+            for (cont = 0; cont < data.myBD.length; cont++ ) {
+                const pNome = document.createElement('p')
+                pNome.textContent = `Nome: ${data.myBD[cont].nome} / CPF: ${data.myBD[cont].cpf}`
+                consulta.appendChild(pNome)
+            }
+          }
+        }
+      }
+
+      const mybtnPost = document.querySelector('#post') 
+      mybtnPost.addEventListener('click', () => executePost() )
+
+      const mybtnGet = document.querySelector('#get') 
+      mybtnGet.addEventListener('click', () => executeGet() )
+    </script>
+  </body>
+
+</html>
+
